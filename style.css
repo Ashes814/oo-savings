@@ -1,4 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap");
+
 * {
+  font-family: "Noto Sans SC", sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -12,7 +15,7 @@ body {
 }
 
 .container {
-  padding: 9.6rem;
+  padding: 19.6rem;
   display: grid;
   column-gap: 3rem;
   row-gap: 3rem;
