@@ -13,11 +13,17 @@ let tenYearPrediction = 0;
 let passingDays = 10;
 
 let savingsData = {
-  date: [],
-  curTotalSavingsList: [],
-  yearlyRateList: [],
-  tenYearPrediction: [],
+  date: [new Date("December 31, 2020"), new Date("December 31, 2021")],
+  curTotalSavingsList: [200000, 220000],
+  yearlyRateList: [0.4, 0.5],
+  tenYearPrediction: [300000, 500000],
 };
+
+const init = function () {
+  const storage = localStorage.getItem("savingsData");
+  if (storage) savingsData = JSON.parse(storage);
+};
+init();
 
 const calcYearlyRate = function (
   curTotalSavings,
@@ -49,54 +55,55 @@ const updateData = function (
   curTotalSavings,
   yearlyRate,
   tenYearPrediction,
-  date = 0
+  date = new Date()
 ) {
   savingsData.curTotalSavingsList.push(curTotalSavings);
   savingsData.yearlyRateList.push(yearlyRate);
   savingsData.tenYearPrediction.push(tenYearPrediction);
   savingsData.date.push(date);
+  localStorage.setItem("savingsData", JSON.stringify(savingsData));
 };
 
 // updateText(10, 10, 10);
 updateButton.addEventListener("click", function () {
   curTotalSavings = +formEl.value;
-  console.log(curTotalSavings);
-  console.log(initSavings);
-  console.log(passingDays);
+  // console.log(curTotalSavings);
+  // console.log(initSavings);
+  // console.log(passingDays);
   yearlyRate = calcYearlyRate(curTotalSavings, initSavings, passingDays);
   //   console.log(yearlyRate);
   tenYearPrediction = calcTenYearsPrediction(curTotalSavings, yearlyRate);
   updateText(curTotalSavings, yearlyRate, tenYearPrediction);
   updateData(curTotalSavings, yearlyRate, tenYearPrediction);
-  console.log(savingsData);
+  updateFigure();
 });
 
 // data for the line chart
-let data = [
-  {
-    x: [1, 2, 3, 4, 5],
-    y: [1, 2, 3, 2, 1],
-    type: "scatter",
-    marker: {
-      color: "red",
+const updateFigure = function () {
+  let data = [
+    {
+      x: savingsData.date,
+      y: savingsData.curTotalSavingsList,
+      type: "scatter",
+      marker: {
+        color: "red",
+      },
     },
-  },
-];
-
-// layout for the line chart
-var layout = {
-  title: "Line Chart",
-  xaxis: {
-    title: "X Axis",
-    showgrid: false,
-    zeroline: false,
-  },
-  yaxis: {
-    title: "Y Axis",
-    showline: false,
-  },
+  ];
+  let layout = {
+    title: "Line Chart",
+    xaxis: {
+      title: "日期",
+      showgrid: false,
+      zeroline: false,
+    },
+    yaxis: {
+      title: "存款余额",
+      showline: false,
+    },
+  };
+  Plotly.newPlot("fig-total", data, layout);
+  Plotly.newPlot("fig-rate", data, layout);
 };
 
-// create the line chart
-Plotly.newPlot("fig-total", data, layout);
-Plotly.newPlot("fig-rate", data, layout);
+updateFigure();
