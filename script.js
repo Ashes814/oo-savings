@@ -47,10 +47,17 @@ const calcTenYearsPrediction = function (curTotalSavings) {
 // console.log(calcTenYearsPrediction(10, 0.1));
 // console.log(calcYearlyRate(250000, 200000, 10));
 
+const formatCur = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency,
+  }).format(value);
+};
+
 const updateText = function (curTotalSavings, yearlyRate, tenYearPrediction) {
-  curText.textContent = `¥${curTotalSavings.toFixed(2)}`;
+  curText.textContent = formatCur(curTotalSavings.toFixed(2), "zh-CN", "CNY");
   rateText.textContent = `${(yearlyRate * 100).toFixed(2)}%`;
-  preText.textContent = `¥${tenYearPrediction.toFixed(2)}`;
+  preText.textContent = formatCur(tenYearPrediction.toFixed(2), "zh-CN", "CNY");
 
   rateText.style.color = yearlyRate > 0 ? "red" : "green";
   preText.style.color = yearlyRate > 0 ? "red" : "green";
